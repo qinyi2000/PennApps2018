@@ -15,20 +15,33 @@ class App extends React.Component{
   constructor(props) {
     super(props);
     this.state=({value:"Fill in the form first.",zip:"", homesize:-1});
+    this.renderSelect=this.renderSelect.bind(this)
     this.onChange=this.onChange.bind(this)
+    this.onNewSelect=this.onNewSelect.bind(this)
+  }
+
+  onNewSelect(event){
+   this.setState({homesize:event.target.value})
+  }
+
+  renderSelect(){
+	return(
+			<Select name="homeprice" id="size" onChange={this.onNewSelect} value={this.state.homesize}>
+                        <MenuItem value={-1}></MenuItem>
+                        <MenuItem value={0}>{"<2500"}</MenuItem>
+                        <MenuItem value={1}>{"2500-5000"}</MenuItem>
+                        <MenuItem value={2}>{">5000"}</MenuItem></Select>
+	);
   }
 
   render() {
+	  const { classes } = this.props;
       return (
       <div>
          <center>
 	      <form ref={el => (this.form = el)}>
          	Enter your zip code:<TextField placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextField><br/>
-         	Enter the size range of your home in square feet:<Select name="homeprice" onChange={(event)=>{this.setState({homesize:event.target.value})}} value={-1}>
-	        	<MenuItem value={-1}></MenuItem>
-			<MenuItem value={0}>{"<2500"}</MenuItem>
-	      		<MenuItem value={1}>{"2500-5000"}</MenuItem>
-	      		<MenuItem value={2}>{">5000"}</MenuItem></Select><br/><br/>
+         	Enter the size range of your home in square feet:{this.renderSelect()}<br/><br/>
 	        <Button variant="raised" onClick={this.onChange} color="primary" disabled={this.state.zip.length!=5 || this.state.homesize==-1}>Calculate Your Cost</Button>
 	      	<p>Cost:{this.state.value}</p>
 	      </form>
