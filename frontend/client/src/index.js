@@ -18,25 +18,27 @@ class App extends React.Component{
   render() {
       return (
       <div>
-         <div>
-         	<TextField placeholder="Enter a zip code." onChange={this.onChange}></TextField>
+         <center>
+	      <form ref={el => (this.form = el)}>
+         	Enter your zip code:<TextField placeholder="" name="zipcode"></TextField><br/>
+         	Enter the price of your house:$<TextField placeholder="" name="homeprice"></TextField><br/>
+	        <Button variant="raised" onClick={this.onChange} color="primary">Calculate Your Cost</Button>
 	      	<p>Cost:${this.state.value}</p>
-	 </div>
+	      </form>
+	 </center>
       </div>
     );
   }
   async onChange(event){
-    if(event.target.value.length==5){
-    var form = new FormData()
-    form.append('zipcode',event.target.value)
-    const cost = await fetch("/api/getcost",
+    var form = new FormData(this.form)
+    this.setState({value:"Loading..."})
+    await fetch("/api/getcost",
     {method:"POST",
     mode: 'same-origin',
     cache: 'default',
     body:form})
     .then(response => response.json())
     .then(myjson => this.setState({value:myjson['zipcode']}));
-    }
   }
 }
 ReactDOM.render(
