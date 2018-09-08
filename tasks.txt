@@ -1,0 +1,22 @@
+tasks for PennApps 2018
+
+
+Front End
+
+Back End
+
+
+
+
+
+
+--
+
+Data sent
+
+- 30 year cost (per capita, by state)
+- levels: safe to very dangerous
++ cost of building a higher foundation
+- cost of flood insurance + net cost saved
++ current elevation
+- Number of disasters
