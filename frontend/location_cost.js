@@ -63,7 +63,7 @@ state_abbr = {
 }
 
 var county_incidents = function(zipCode) {
-	var zipSearch = RexExp("^" + zipCode + ".*");
+	var zipSearch = RegExp("\n" + zipCode + ".*");
 	var zipLine = zipData.match(zipSearch);
 	if(!zipLine) {
 		throw "Location Not Found";
