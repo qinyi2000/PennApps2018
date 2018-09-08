@@ -6,12 +6,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Materialize from 'materialize-css'
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class App extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state=({value:""});
+    this.state=({value:"Fill in the form first.",zip:"", homesize:-1});
     this.onChange=this.onChange.bind(this)
   }
 
@@ -20,10 +23,14 @@ class App extends React.Component{
       <div>
          <center>
 	      <form ref={el => (this.form = el)}>
-         	Enter your zip code:<TextField placeholder="" name="zipcode"></TextField><br/>
-         	Enter the price of your house:$<TextField placeholder="" name="homeprice"></TextField><br/>
-	        <Button variant="raised" onClick={this.onChange} color="primary">Calculate Your Cost</Button>
-	      	<p>Cost:${this.state.value}</p>
+         	Enter your zip code:<TextField placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextField><br/>
+         	Enter the size range of your home in square feet:<Select name="homeprice" onChange={(event)=>{this.setState({homesize:event.target.value})}} value={-1}>
+	        	<MenuItem value={-1}></MenuItem>
+			<MenuItem value={0}>{"<2500"}</MenuItem>
+	      		<MenuItem value={1}>{"2500-5000"}</MenuItem>
+	      		<MenuItem value={2}>{">5000"}</MenuItem></Select><br/><br/>
+	        <Button variant="raised" onClick={this.onChange} color="primary" disabled={this.state.zip.length!=5 || this.state.homesize==-1}>Calculate Your Cost</Button>
+	      	<p>Cost:{this.state.value}</p>
 	      </form>
 	 </center>
       </div>
@@ -38,7 +45,7 @@ class App extends React.Component{
     cache: 'default',
     body:form})
     .then(response => response.json())
-    .then(myjson => this.setState({value:myjson['zipcode']}));
+    .then(myjson => this.setState({value:"$"+myjson['zipcode']}));
   }
 }
 ReactDOM.render(

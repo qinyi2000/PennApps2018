@@ -10,6 +10,7 @@ const port = process.env.PORT || 5000;
 
 app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
+	homecost = req.body["homeprice"]
 	return res.send({zipcode:zipcode})//For testing
 });
 
