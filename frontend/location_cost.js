@@ -63,12 +63,7 @@ state_abbr = {
 }
 
 var county_incidents = function(zipCode) {
-//	var zipSearch = RegExp("\r\n" + zipCode + "[^\r\n]*?\r\n","m");
-	//var zipSearch = new RegExp("\r\n58341[^\r\n]*?\r\n");
-	//var zipLine = String(zipData).match(zipSearch);
 	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
-	console.log(String(zipData))
-	console.log(zipLine)
 	if(!zipLine) {
 		throw "Location Not Found";
 	}
