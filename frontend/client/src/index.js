@@ -18,20 +18,20 @@ class App extends React.Component{
   render() {
       return (
       <div>
-         <div>
-	      <form>
-         	<TextField placeholder="Enter a zip code." name="zipcode"></TextField>
-         	<TextField placeholder="H" name=""></TextField>
-	        <Button onClick={this.onChange}></Button>
+         <center>
+	      <form ref={el => (this.form = el)}>
+         	Enter your zip code:<TextField placeholder="" name="zipcode"></TextField><br/>
+         	Enter the price of your house:$<TextField placeholder="" name="homeprice"></TextField><br/>
+	        <Button variant="raised" onClick={this.onChange} color="primary">Calculate Your Cost</Button>
 	      	<p>Cost:${this.state.value}</p>
 	      </form>
-	 </div>
+	 </center>
       </div>
     );
   }
   async onChange(event){
-    var form = new FormData(event.target)
-    const cost = await fetch("/api/getcost",
+    var form = new FormData(this.form)
+    await fetch("/api/getcost",
     {method:"POST",
     mode: 'same-origin',
     cache: 'default',

@@ -4,7 +4,6 @@ var multer = require('multer');
 var upload = multer();
 const app = express();
 app.use(upload.array());
-const host = process.env.HOST || '0.0.0.0' || 'https://localtunnel.me';
 const port = process.env.PORT || 5000;
 
 //So what you'll want to do here is to update the below app.post() call to process the zipcode, read in in the first line, and replace the object with an object containing whatever the frontend needs, in this case the cost most likely. Try not to change the return parameter name, will you? ;)
