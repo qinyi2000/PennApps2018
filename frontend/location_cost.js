@@ -1,5 +1,5 @@
 fs = require('fs');
-zipData = fs.readFile("db/uszipsv1.2.csv");
+zipData = fs.readFileSync("db/uszipsv1.2.csv");
 
 state_abbr = {
 	'AL' : 'Alabama',
@@ -77,6 +77,6 @@ var county_incidents = function(zipCode) {
 		county: zipArr[8]
 	}
 	return location;
-	
+
 }
 
