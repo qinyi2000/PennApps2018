@@ -31,6 +31,7 @@ class App extends React.Component{
   }
   async onChange(event){
     var form = new FormData(this.form)
+    this.setState({value:"Loading..."})
     await fetch("/api/getcost",
     {method:"POST",
     mode: 'same-origin',
