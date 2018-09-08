@@ -76,6 +76,7 @@ var county_incidents = function(zipCode) {
 		state: state_abbr[zipArr[4]],
 		county: zipArr[8]
 	}
-
+	return location;
+	
 }
 
