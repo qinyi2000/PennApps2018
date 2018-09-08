@@ -19,16 +19,18 @@ class App extends React.Component{
       return (
       <div>
          <div>
-         	<TextField placeholder="Enter a zip code." onChange={this.onChange}></TextField>
+	      <form>
+         	<TextField placeholder="Enter a zip code." name="zipcode"></TextField>
+         	<TextField placeholder="H" name=""></TextField>
+	        <Button onClick={this.onChange}></Button>
 	      	<p>Cost:${this.state.value}</p>
+	      </form>
 	 </div>
       </div>
     );
   }
   async onChange(event){
-    if(event.target.value.length==5){
-    var form = new FormData()
-    form.append('zipcode',event.target.value)
+    var form = new FormData(event.target)
     const cost = await fetch("/api/getcost",
     {method:"POST",
     mode: 'same-origin',
@@ -36,7 +38,6 @@ class App extends React.Component{
     body:form})
     .then(response => response.json())
     .then(myjson => this.setState({value:myjson['zipcode']}));
-    }
   }
 }
 ReactDOM.render(
