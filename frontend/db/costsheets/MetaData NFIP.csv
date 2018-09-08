@@ -1,0 +1,5 @@
+Field,Description
+State,State where property is located. 
+Year,Four digit year in which the loss occurred. Note that some events span multiple years.
+NumberOfClaimsClosedWithPayment,The total number of claims closed with payment for the given state and year.
+TotalPaid,The total dollar amount paid on closed claims for the given state and year.

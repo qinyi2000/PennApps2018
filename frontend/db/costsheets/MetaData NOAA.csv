@@ -1,0 +1,8 @@
+Field,Description
+Year,The four digit year in which the event occurred.
+State,"The name or phrase describing the U.S. state, district, or territory. (ex: Alaska)"
+County,"The name or phrase describing the U.S. county or county equivalent, or NWS Forecast Zone. For more information on NWS Forecase Zones, see http://www.nws.noaa.gov/mirs/public/prods/maps/pfzones_list.htm ."
+Lat,The latitude used to map the event.
+Lon,The longiutde used to map the event.
+NumEpisodes,The number of Flooding Episdoes for the State/County/Year.
+CountyZone,"Either C or Z, denoting whether the event occurred in a U.S. County or county equivalent, or a NWS forecast zone."

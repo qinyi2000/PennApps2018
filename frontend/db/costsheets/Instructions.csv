@@ -1,0 +1,16 @@
+Instructions for Use of this Dataset
+"This dataset was created for the Data Visualization on FEMA.gov/data-visualization using NOAA, FEMA Individual Assistance (IA) and National Flood Insurance Program (NFIP) data that was released to the public. It is created by pulling and processing multiple datasets (listed below) together, and in certain instances aggregating data by common fields. Merging data tables depends on common fields being present throughout each source file. For this reason many columns in the original files were not included and other columns were created for tracing the original data back to its source.
+
+Original Data Files:
+IHP Floods: 
+NFIP Database: 
+NOAA Storm Events Data: https://www.ncdc.noaa.gov/stormevents/
+
+This dataset is not intended to be an official federal report or comprehensive grants data set, and should not be considered as either.
+
+FEMA Citation: The agency's preferred citation for each dataset is included in its metadata. Users should also cite the date that data was accessed or retrieved from fema.gov and/or Data.gov. Finally, users must clearly state that ""FEMA and the Federal Government cannot vouch for the data or analyses derived from these data after the data have been retrieved from the Agency's website(s) and/or Data.gov.""
+
+For inquires on the data visualization map and this modified set or for 508 compliance contact the data-visualization team via email FEMA-New-Media@fema.dhs.gov.
+If you have media inquiries about this dataset please email the FEMA News Desk FEMA-News-Desk@dhs.gov or call (202) 646-3272.
+For other general inquires contact the OpenFEMA team via email openfema@fema.dhs.gov."
+This data set will be updated on a semi-annual basis. The last updated occurred on 3/15/17.
