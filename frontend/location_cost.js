@@ -4,8 +4,10 @@ countyData = fs.readFileSync("db/costsheets/NOAA.csv");
 stateData = fs.readFileSync("db/costsheets/NFIP.csv");
 populations = fs.readFileSync("db/costsheets/State_Populations.csv");
 premiums = fs.readFileSync("db/costsheets/premiums.csv");
-import regression from 'regression';
 math = require('math');
+regression = require('regression');
+math = require('mathjs');
+polynomial = require("polynomial")
 math.import(require('mathjs-simple-integral'));
 
 state_abbr = {
@@ -71,19 +73,17 @@ state_abbr = {
 
 var costs = function(location, houseValue) {
 	var state = location.state;
-	var trend = episodes.trend;
 	var costArr = String(stateData).split("\n").filter( (x) => {
 		try {
-			parseInt(x.split(",")[0]);
-			return x.includes(state);
+			return x.includes(state) && !x.includes("NA"); 
 		} catch(e) {
 			return false;
 		}
 	});
-	console.log(costArr);
-	var cost2D = costArr.forEach( (x) => {
+	//console.log(costArr);
+	var cost2D = costArr.map( (x, ind) => {
 		xArr = x.split(",");
-		return [xArr[1],xArr[3]];
+		return [Number.parseInt(xArr[1]),Number.parseInt(xArr[3])];
 	});
 	var reg = [
 		regression.linear(cost2D, {precision: 4}),
@@ -98,7 +98,17 @@ var costs = function(location, houseValue) {
 			r2 = reg[i].r2;
 		}
 	}
-	bestReg = reg[indx];
+	var bestReg;
+	var bestRegEq=reg[indx].equation
+	if(indx==0){
+		bestReg=String(bestRegEq[0])+"x"+String(bestRegEq[1])
+	}
+	if(indx==1){
+		bestReg=String(bestRegEq[0])+"e^x"+String(bestRegEq[1])
+	}
+	if(indx==2){
+		bestReg = new polynomial(reg[indx].equation).toString();
+	}
 	integrated = math.integral(bestReg, 'x');
 	fin = math.simplify(integrated, {x: 2048});
 	init = math.simplify(integrated, {x: 2018});
@@ -143,7 +153,7 @@ var saved = function(location, c, houseValue) {
 		premium: pTotal,
 		cost: cost,
 		newCost: pTotal + 0.10*cost,
-		netSaved: cost-pTotal;
+		netSaved: cost-pTotal
 	}
 }
 
@@ -163,7 +173,7 @@ var episodes = function(location) {
 		}
 	}
 	);
-	console.log(disasters)
+	//console.log(disasters)
 	var incidents = disasters.length;
 	var oldDisasters = disasters.filter( (x) => Number.parseInt(x.split(",")[0], 10) <= 2006 ).length;
 	var newDisasters = incidents - oldDisasters;
@@ -180,7 +190,7 @@ var episodes = function(location) {
 	return countyStats;
 };
 
-locator : function(zipCode) {
+var locator = function(zipCode) {
 	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
 	if(!zipLine) {
 		throw "Location Not Found";
@@ -198,7 +208,7 @@ locator : function(zipCode) {
 };
 
 module.exports = {
-	main : function(zipCode){
+	main : function(zipCode, houseValue){
 		var location = locator(zipCode)
 		var episode = episodes(location)
 		var cost = costs(location)

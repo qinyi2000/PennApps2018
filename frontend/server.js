@@ -10,8 +10,9 @@ const loc = require("./location_cost")
 app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
 	homesize = req.body["homeprice"]
-	var l = loc.main(zipcode)
+	var l = loc.main(zipcode, homesize)
 	//try{
+	//
 	return res.send(l)//For testing
 	//}
 	//catch(e){
