@@ -1,6 +1,10 @@
 fs = require('fs');
 zipData = fs.readFileSync("db/uszipsv1.2.csv");
 countyData = fs.readFileSync("db/costsheets/NOAA.csv");
+stateData = fs.readFileSync("db/costsheets/NFIP.csv");
+import regression from 'regression';
+math = require('math');
+math.import(require('mathjs-simple-integral'));
 
 state_abbr = {
 	'AL' : 'Alabama',
@@ -62,10 +66,45 @@ state_abbr = {
 	'WI' : 'Wisconsin',
 	'WY' : 'Wyoming'
 }
+
+var costs = function(location) {
+	var state = location.state;
+	var trend = episodes.trend;
+	var costArr = String(stateData).split("\n").filter( (x) => {
+		try {
+			parseInt(x.split(",")[0]);
+			return x.includes(state);
+		} catch(e) {
+			return false;
+		}
+	});
+	console.log(costArr);
+	var cost2D = costArr.forEach( (x) => {
+		xArr = x.split(",");
+		return [xArr[1],xArr[3]];
+	});
+	var reg = [
+		regression.linear(cost2D, {precision: 4}),
+		regression.exponential(cost2D, {precision: 4}),
+		regression.polynomial(cost2D, {precision: 4})
+	]
+	var r2 = 0;
+	var indx = -1;
+	for(var i = 0; i < reg.length; i++) {
+		if(r2 < reg[i].r2) {
+			indx = i;
+			r2 = reg[i].r2;
+		}
+	}
+	bestReg = reg[indx];
+	integrated = math.integral(bestReg, 'x');
+	fin = math.simplify(integrated, {x: 2048});
+	init = math.simplify(integrated, {x: 2018});
+	cost = fin - init;
+	return cost;
+};
+
 module.exports = {
-	costs : function(episodes, location) {
-			
-	},
 	episodes : function(location) {
 		var state = location.state;
 		var county = location.county;
@@ -78,7 +117,7 @@ module.exports = {
 			return x.includes(state) && x.includes(county); 
 			}
 			catch(e){
-				return false
+				return false;
 			}
 		}
 		);
