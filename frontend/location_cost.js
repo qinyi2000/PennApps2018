@@ -61,8 +61,8 @@ state_abbr = {
 	'WI' : 'Wisconsin',
 	'WY' : 'Wyoming'
 }
-
-var county_incidents = function(zipCode) {
+module.exports = {
+county_incidents : function(zipCode) {
 	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
 	if(!zipLine) {
 		throw "Location Not Found";
@@ -76,7 +76,6 @@ var county_incidents = function(zipCode) {
 		state: state_abbr[zipArr[4]],
 		county: zipArr[8]
 	}
-//	return location;
-	console.log(location)
+	return location;
 }
-county_incidents(58341)
+};

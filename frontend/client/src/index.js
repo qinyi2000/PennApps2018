@@ -5,10 +5,12 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Materialize from 'materialize-css'
+import TextFeld from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
 
 class App extends React.Component{
 
@@ -40,10 +42,16 @@ class App extends React.Component{
       <div>
          <center>
 	      <form ref={el => (this.form = el)}>
-         	Enter your zip code:<TextField placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextField><br/>
+         	Enter your zip code:
+          <TextFeld placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextFeld><br/>
          	Enter the size range of your home in square feet:{this.renderSelect()}<br/><br/>
 	        <Button variant="raised" onClick={this.onChange} color="primary" disabled={this.state.zip.length!=5 || this.state.homesize==-1}>Calculate Your Cost</Button>
-	      	<p>Cost:{this.state.value}</p>
+	      {this.state.value.includes("Fill in")?(<p></p>):(<div>
+		 <Card style={{width:"30vw"}}>
+		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardContent>{this.state.value}</CardContent>
+		 </Card>     
+  </div>)}
 	      </form>
 	 </center>
       </div>
@@ -58,7 +66,7 @@ class App extends React.Component{
     cache: 'default',
     body:form})
     .then(response => response.json())
-    .then(myjson => this.setState({value:"$"+myjson['zipcode']}));
+    .then(myjson => this.setState({value:myjson['zipcode']}));
   }
 }
 ReactDOM.render(
