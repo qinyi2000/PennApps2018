@@ -85,13 +85,15 @@ var costs = function(location, houseValue) {
 		xArr = x.split(",");
 		return [Number.parseInt(xArr[1]),Number.parseInt(xArr[3])];
 	});
+	console.log(cost2D)
 	var reg = [
 		regression.linear(cost2D, {precision: 4}),
-		regression.exponential(cost2D, {precision: 4}),
-		regression.polynomial(cost2D, {precision: 4})
+//		regression.exponential(cost2D, {precision: 4})
+	//	regression.polynomial(cost2D, {precision: 4})
 	]
-	var r2 = 0;
-	var indx = -1;
+	console.log(reg[0])
+	var r2 = -1;
+	var indx = 0;
 	for(var i = 0; i < reg.length; i++) {
 		if(r2 < reg[i].r2) {
 			indx = i;
@@ -99,12 +101,14 @@ var costs = function(location, houseValue) {
 		}
 	}
 	var bestReg;
+	console.log(indx)
 	var bestRegEq=reg[indx].equation
+	console.log(bestRegEq)
 	if(indx==0){
 		bestReg=String(bestRegEq[0])+"x"+String(bestRegEq[1])
 	}
 	if(indx==1){
-		bestReg=String(bestRegEq[0])+"e^x"+String(bestRegEq[1])
+		bestReg=String(bestRegEq[0])+"e^("+String(bestRegEq[1])+"x)"
 	}
 	if(indx==2){
 		bestReg = new polynomial(reg[indx].equation).toString();
@@ -113,6 +117,7 @@ var costs = function(location, houseValue) {
 	fin = math.simplify(integrated, {x: 2048});
 	init = math.simplify(integrated, {x: 2018});
 	cost = fin - init;
+	console.log(cost)
 	pops = String(populations).split("\n").filter((x) => {
 		try{
 			parseInt(x.split(",")[0])

@@ -66,7 +66,7 @@ class App extends React.Component{
     cache: 'default',
     body:form})
     .then(response => response.json())
-    .then(myjson => this.setState({value:myjson['zip']}));
+    .then(myjson => this.setState({value:myjson['1']}));
   }
 }
 ReactDOM.render(

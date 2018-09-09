@@ -11,9 +11,11 @@ app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
 	homesize = req.body["homeprice"]
 	var l = loc.main(zipcode, homesize)
+	console.log(l)
 	//try{
 	//
-	return res.send(l)//For testing
+	var speeches={1:"If you were to purchase flood insurance, you would save about $"+l.netSaved+"*.\n\n*This is of course not necessarily accurate due to the small amount of collcted data"}
+	return res.send(speeches)//For testing
 	//}
 	//catch(e){
 	//	return res.send({zipcode:"Your zip code is not within our database. Sorry about that."})
