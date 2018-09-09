@@ -209,7 +209,7 @@ var episodes = function(location) {
 var locator = function(zipCode) {
 	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
 	if(!zipLine) {
-		throw "Location Not Found";
+		return "Location Not Found";
 	}
 	//console.log(String(zipData).split("\r\n"))
 	var zipArr = zipLine.split(",");
@@ -226,6 +226,9 @@ var locator = function(zipCode) {
 module.exports = {
 	main : function(zipCode, houseValue){
 		var location = locator(zipCode)
+		if(location=="Location Not Found"){
+			return -1
+		}
 		var episode = episodes(location)
 		var cost = costs(location)
 		var prices = saved(location, cost, houseValue)

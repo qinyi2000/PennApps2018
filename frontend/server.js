@@ -11,15 +11,12 @@ app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
 	homesize = req.body["homeprice"]
 	var l = loc.main(zipcode, homesize)
-	console.log(l)
-	//try{
-	//
-	var speeches={1:"If you were to purchase flood insurance, you would save about $"+l.netSaved+"*.\n\n*This is of course not necessarily accurate due to the small amount of collcted data"}
+	if(l!=-1){
+	var speeches={1:"If you were to purchase flood insurance, you would save about $"+l.netSaved+"*. over the course of 30 years.\n\n*This is of course not necessarily accurate due to the small amount of collcted data", 2:"There are likely to be about "+l.forecast+" floods in your area over 30 years.", 3:"The cost to you without insurance would be $"+l.cost+"."}}
+	else{
+	var speeches={1:"Your zip code isn't in our database. Sorry about that.",2:"Your zip code isn't in our database. Sorry about that.",3:"Your zip code isn't in our database. Sorry about that."}
+	}
 	return res.send(speeches)//For testing
-	//}
-	//catch(e){
-	//	return res.send({zipcode:"Your zip code is not within our database. Sorry about that."})
-	//}
 });
 
 if (process.env.NODE_ENV === 'production') {
