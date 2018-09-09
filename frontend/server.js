@@ -13,7 +13,12 @@ app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
 	homesize = req.body["homeprice"]
 	var l = loc.county_incidents(zipcode)
+	try{
 	return res.send({zipcode:"You live in "+String(l.city)+", "+String(l.state)})//For testing
+	}
+	catch{
+		return res.send({zipcode:"Your zip code is not within our database. Sorry about that."})
+	}
 });
 
 if (process.env.NODE_ENV === 'production') {
