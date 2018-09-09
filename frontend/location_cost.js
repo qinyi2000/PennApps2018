@@ -63,15 +63,30 @@ state_abbr = {
 	'WY' : 'Wyoming'
 }
 module.exports = {
+	costs : function(episodes, location) {
+			
+	},
 	episodes : function(location) {
 		var state = location.state;
 		var county = location.county;
-		var countyParser = RegExp("[0-9]{4}," + state + ",[\w ]*?" + county + ",[^\n\r]*");
-		var disasters = countyData.match(countyParser);
+		if(county==""){
+			county=location.city
+		}
+		var disasters = String(countyData).split("\n").filter((x) => {
+			try{
+			parseInt(x.split(",")[0])
+			return x.includes(state) && x.includes(county); 
+			}
+			catch(e){
+				return false
+			}
+		}
+		);
+		console.log(disasters)
 		var incidents = disasters.length;
-		var oldDisasters = disasters.filter( (x) => Number.parseInt(x[:4], 10) <= 2006 ).length;
+		var oldDisasters = disasters.filter( (x) => Number.parseInt(x.split(",")[0], 10) <= 2006 ).length;
 		var newDisasters = incidents - oldDisasters;
-		var trend = newDisasters - oldDisasters);
+		var trend = newDisasters - oldDisasters;
 		if(trend * 30./11 + newDisasters < 0) {
 			trend = -newDisasters * 11./30;
 		}
