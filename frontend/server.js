@@ -7,18 +7,16 @@ app.use(upload.array());
 const port = process.env.PORT || 5000;
 const loc = require("./location_cost")
 
-//So what you'll want to do here is to update the below app.post() call to process the zipcode, read in in the first line, and replace the object with an object containing whatever the frontend needs, in this case the cost most likely. Try not to change the return parameter name, will you? ;)
-
 app.post('/api/getcost', (req, res) => {
 	zipcode = req.body["zipcode"]
 	homesize = req.body["homeprice"]
-	var l = loc.county_incidents(zipcode)
-	try{
-	return res.send({zipcode:"You live in "+String(l.city)+", "+String(l.state)})//For testing
-	}
-	catch{
-		return res.send({zipcode:"Your zip code is not within our database. Sorry about that."})
-	}
+	var l = loc.main(zipcode)
+	//try{
+	return res.send(l)//For testing
+	//}
+	//catch(e){
+	//	return res.send({zipcode:"Your zip code is not within our database. Sorry about that."})
+	//}
 });
 
 if (process.env.NODE_ENV === 'production') {

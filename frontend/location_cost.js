@@ -2,6 +2,7 @@ fs = require('fs');
 zipData = fs.readFileSync("db/uszipsv1.2.csv");
 countyData = fs.readFileSync("db/costsheets/NOAA.csv");
 stateData = fs.readFileSync("db/costsheets/NFIP.csv");
+populations = fs.readFileSync("db/costsheets/State_Populations.csv");
 import regression from 'regression';
 math = require('math');
 math.import(require('mathjs-simple-integral'));
@@ -101,56 +102,81 @@ var costs = function(location) {
 	fin = math.simplify(integrated, {x: 2048});
 	init = math.simplify(integrated, {x: 2018});
 	cost = fin - init;
-	return cost;
+	pops = String(populations).split("\n").filter((x) => {
+		try{
+			parseInt(x.split(",")[0])
+			return x.includes(state); 
+		}
+		catch(e){
+			return false;
+		}
+	});
+	actualPop = parseInt(pops[0].split(",")[1]);
+	perCapita = cost * 1.0 / actualPop;
+	return {cost:perCapita};
+};
+
+var saved = function(location, c) {
+	var state = location.state;
+	var cost = c.cost;
+
+}
+
+var episodes = function(location) {
+	var state = location.state;
+	var county = location.county;
+	if(county==""){
+		county=location.city
+	}
+	var disasters = String(countyData).split("\n").filter((x) => {
+		try{
+		parseInt(x.split(",")[0])
+		return x.includes(state) && x.includes(county); 
+		}
+		catch(e){
+			return false;
+		}
+	}
+	);
+	console.log(disasters)
+	var incidents = disasters.length;
+	var oldDisasters = disasters.filter( (x) => Number.parseInt(x.split(",")[0], 10) <= 2006 ).length;
+	var newDisasters = incidents - oldDisasters;
+	var trend = newDisasters - oldDisasters;
+	if(trend * 30./11 + newDisasters < 0) {
+		trend = -newDisasters * 11./30;
+	}
+	var forecast = newDisasters * 30./11 + 1/2 * trend * 30./11;
+	var countyStats = {
+		incidents: incidents,
+		trend: trend,
+		forecast: forecast
+	};
+	return countyStats;
+};
+
+locator : function(zipCode) {
+	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
+	if(!zipLine) {
+		throw "Location Not Found";
+	}
+	//console.log(String(zipData).split("\r\n"))
+	var zipArr = zipLine.split(",");
+
+	var location = {
+		zip: zipCode,
+		city: zipArr[3],
+		state: state_abbr[zipArr[4]],
+		county: zipArr[8]
+	};
+	return location;
 };
 
 module.exports = {
-	episodes : function(location) {
-		var state = location.state;
-		var county = location.county;
-		if(county==""){
-			county=location.city
-		}
-		var disasters = String(countyData).split("\n").filter((x) => {
-			try{
-			parseInt(x.split(",")[0])
-			return x.includes(state) && x.includes(county); 
-			}
-			catch(e){
-				return false;
-			}
-		}
-		);
-		console.log(disasters)
-		var incidents = disasters.length;
-		var oldDisasters = disasters.filter( (x) => Number.parseInt(x.split(",")[0], 10) <= 2006 ).length;
-		var newDisasters = incidents - oldDisasters;
-		var trend = newDisasters - oldDisasters;
-		if(trend * 30./11 + newDisasters < 0) {
-			trend = -newDisasters * 11./30;
-		}
-		var forecast = newDisasters * 30./11 + 1/2 * trend * 30./11;
-		var countyStats = {
-			incidents: incidents,
-			trend: trend,
-			forecast: forecast
-		};
-		return countyStats;
-	},
-	locator : function(zipCode) {
-		var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
-		if(!zipLine) {
-			throw "Location Not Found";
-		}
-		//console.log(String(zipData).split("\r\n"))
-		var zipArr = zipLine.split(",");
-
-		var location = {
-			zip: zipCode,
-			city: zipArr[3],
-			state: state_abbr[zipArr[4]],
-			county: zipArr[8]
-		};
-		return location;
+	main : function(zipCode){
+		var location = locator(zipCode)
+		var episode = episodes(location)
+		var cost = costs(location)
+		return Object.assign(episode, cost, location) 
 	}
 };
