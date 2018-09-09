@@ -1,5 +1,6 @@
 fs = require('fs');
 zipData = fs.readFileSync("db/uszipsv1.2.csv");
+countyData = fs.readFileSync("db/costsheets/NOAA.csv");
 
 state_abbr = {
 	'AL' : 'Alabama',
@@ -62,20 +63,40 @@ state_abbr = {
 	'WY' : 'Wyoming'
 }
 module.exports = {
-county_incidents : function(zipCode) {
-	var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
-	if(!zipLine) {
-		throw "Location Not Found";
-	}
-	//console.log(String(zipData).split("\r\n"))
-	var zipArr = zipLine.split(",");
+	episodes : function(location) {
+		var state = location.state;
+		var county = location.county;
+		var countyParser = RegExp("[0-9]{4}," + state + ",[\w ]*?" + county + ",[^\n\r]*");
+		var disasters = countyData.match(countyParser);
+		var incidents = disasters.length;
+		var oldDisasters = disasters.filter( (x) => Number.parseInt(x[:4], 10) <= 2006 ).length;
+		var newDisasters = incidents - oldDisasters;
+		var trend = newDisasters - oldDisasters);
+		if(trend * 30./11 + newDisasters < 0) {
+			trend = -newDisasters * 11./30;
+		}
+		var forecast = newDisasters * 30./11 + 1/2 * trend * 30./11;
+		var countyStats = {
+			incidents: incidents,
+			trend: trend,
+			forecast: forecast
+		};
+		return countyStats;
+	},
+	locator : function(zipCode) {
+		var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
+		if(!zipLine) {
+			throw "Location Not Found";
+		}
+		//console.log(String(zipData).split("\r\n"))
+		var zipArr = zipLine.split(",");
 
-	var location = {
-		zip: zipCode,
-		city: zipArr[3],
-		state: state_abbr[zipArr[4]],
-		county: zipArr[8]
+		var location = {
+			zip: zipCode,
+			city: zipArr[3],
+			state: state_abbr[zipArr[4]],
+			county: zipArr[8]
+		};
+		return location;
 	}
-	return location;
-}
 };
