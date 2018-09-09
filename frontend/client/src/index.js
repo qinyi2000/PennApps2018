@@ -11,12 +11,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import { Navbar, NavbarBrand, NavbarNav, NavbarToggler, Collapse, NavItem, NavLink } from 'mdbreact';
 
 class App extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state=({value:"Fill in the form first.",zip:"", homesize:-1});
+    this.state=({value:"Fill in the form first.",zip:"", homesize:-1, value2:"", value3:""});
     this.renderSelect=this.renderSelect.bind(this)
     this.onChange=this.onChange.bind(this)
     this.onNewSelect=this.onNewSelect.bind(this)
@@ -41,15 +42,34 @@ class App extends React.Component{
       return (
       <div>
          <center>
+<Navbar color="indigo" dark expand="md" scrolling>
+                    { !this.state.isWideEnough && <NavbarToggler onClick = { this.onClick } />}
+                    <Collapse isOpen = { this.state.collapse } navbar>
+                        <NavbarNav center>
+	      		  <NavItem>
+	      			<h1 style={{color:"white"}}>Flooding Cost Calculator</h1>
+                          </NavItem>
+                        </NavbarNav>
+                    </Collapse>
+                </Navbar>
+
 	      <form ref={el => (this.form = el)}>
          	Enter your zip code:
           <TextFeld placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextFeld><br/>
          	Enter the size range of your home in square feet:{this.renderSelect()}<br/><br/>
 	        <Button variant="raised" onClick={this.onChange} color="primary" disabled={this.state.zip.length!=5 || this.state.homesize==-1}>Calculate Your Cost</Button>
 	      {this.state.value.includes("Fill in")?(<p></p>):(<div>
-		 <Card style={{width:"30vw"}}>
+		 <Card style={{width:"30vw"}} className="card">
 		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
 		      <CardContent>{this.state.value}</CardContent>
+		 </Card>   
+		 <Card style={{width:"30vw", float:"left", top:"-30vh"}} className="card">
+		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardContent>{this.state.value2}</CardContent>
+		 </Card>     
+		 <Card style={{width:"30vw", float:"right", top:"-30vh"}} className="card">
+		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardContent>{this.state.value3}</CardContent>
 		 </Card>     
   </div>)}
 	      </form>
@@ -66,7 +86,7 @@ class App extends React.Component{
     cache: 'default',
     body:form})
     .then(response => response.json())
-    .then(myjson => this.setState({value:myjson['1']}));
+    .then(myjson => this.setState({value:myjson['1'],value2:myjson['2'],value3:myjson['3']}));
   }
 }
 ReactDOM.render(
