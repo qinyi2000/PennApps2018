@@ -3,6 +3,7 @@ zipData = fs.readFileSync("db/uszipsv1.2.csv");
 countyData = fs.readFileSync("db/costsheets/NOAA.csv");
 stateData = fs.readFileSync("db/costsheets/NFIP.csv");
 populations = fs.readFileSync("db/costsheets/State_Populations.csv");
+premiums = fs.readFileSync("db/costsheets/premiums.csv");
 import regression from 'regression';
 math = require('math');
 math.import(require('mathjs-simple-integral'));
@@ -119,7 +120,22 @@ var costs = function(location) {
 var saved = function(location, c) {
 	var state = location.state;
 	var cost = c.cost;
-
+	var prems = String(premiums).split("\n").filter( (x) => {
+		try{
+			parseInt(x.split(",")[0])
+			return x.includes(state); 
+		}
+		catch(e){
+			return false;
+		}
+	});
+	premiumPrice = parseInt(prems[0].split(",")[2].substring(1)); //remove $ sign
+	pTotal = premiumPrice * 30;
+	return {
+		premium: pTotal,
+		cost: cost,
+		netSaved: cost-pTotal;
+	}
 }
 
 var episodes = function(location) {
