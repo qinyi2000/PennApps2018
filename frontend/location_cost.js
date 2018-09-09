@@ -85,9 +85,20 @@ var costs = function(location, houseValue) {
 		xArr = x.split(",");
 		return [Number.parseInt(xArr[1]),Number.parseInt(xArr[3])];
 	});
-	console.log(cost2D)
+	console.log(cost2D);
+	truncCost2D = Array();
+	// make medians
+	for(var i = cost2D.length-1; i >= 0; i-=5) {
+		let a = Array();
+		for(var j = 0; j < 5; j++) {
+			a.push(cost2D[i-j]);
+		}
+		a.sort();
+		truncCost2D += [cost2D[i], a[2]];
+	}
+
 	var reg = [
-		regression.linear(cost2D, {precision: 4}),
+		regression.linear(truncCost2D, {precision: 4}),
 //		regression.exponential(cost2D, {precision: 4})
 	//	regression.polynomial(cost2D, {precision: 4})
 	]
@@ -104,13 +115,13 @@ var costs = function(location, houseValue) {
 	console.log(indx)
 	var bestRegEq=reg[indx].equation
 	console.log(bestRegEq)
-	if(indx==0){
+	if(indx===0){
 		bestReg=String(bestRegEq[0])+"x"+String(bestRegEq[1])
 	}
-	if(indx==1){
+	if(indx===1){
 		bestReg=String(bestRegEq[0])+"e^("+String(bestRegEq[1])+"x)"
 	}
-	if(indx==2){
+	if(indx===2){
 		bestReg = new polynomial(reg[indx].equation).toString();
 	}
 	integrated = math.integral(bestReg, 'x');
@@ -130,9 +141,9 @@ var costs = function(location, houseValue) {
 	var actualPop = parseInt(pops[0].split(",")[1]);
 	var perCapita = cost * 1.0 / actualPop;
 	//cost edit on house size
-	if(houseValue == 0) {
+	if(houseValue === 0) {
 		var adjCost = perCapita * 0.40; 
-	}else if(houseValue == 1) {
+	}else if(houseValue === 1) {
 		var adjCost = perCapita;
 	}else {
 		var adjCost = perCapita * 2.00;
@@ -165,8 +176,8 @@ var saved = function(location, c, houseValue) {
 var episodes = function(location) {
 	var state = location.state;
 	var county = location.county;
-	if(county==""){
-		county=location.city
+	if(county === ""){
+		county = location.city;
 	}
 	var disasters = String(countyData).split("\n").filter((x) => {
 		try{
