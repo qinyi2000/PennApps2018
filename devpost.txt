@@ -1,0 +1,20 @@
+Flood Cost Calculator
+
+
+This program intakes a user's location, calculating the costs of floods and money saved with flood insurance.
+
+
+## Inspiration
+Many people who aren't victims of natural disasters think that they will never be affected by them.  They believe that they are safe, and because of this, do not properly prepare for the disasters.  Because of this, we decided to make a tool that _ highlights the severity _ of natural disasters, specifically floods, where a user lives.  When users discover that they really are in danger of these disasters, we believe that they will have a desire to prepare and protect themselves for what is to come.
+## What it does
+The flood cost calculator inputs a location and the general size of the user's house.  We then use data to predict the amount of future floods and the cost of future floods.  Finally, the cost of these floods is compared to the average premium for flood insurance in the user's area (since we aren't collecting more information about the user) to calculate how much is saved (or lost) by purchasing flood insurance.
+## How I built it
+Our calculations are performed using node.js.  The zip code is converted into a county and state which can be used to access other databases.  The state is used to access a database for costs of floods by state by year since 1996.  The data are then processed with regression and then projected over the next 30 years, and then the function is integrated to estimate the total cost over the time interval.  In addition, the county was used in another dataset which listed the amounts of flood incidents by county since 1996.  This dataset is then used to model the amount of incidents for the next 30 years.  Finally, a database of annual flood insurance premiums is used to calculate the cost of the insurance, necessary to figure out how much money is saved with insurance.
+## Challenges I ran into
+Our group ran into challenges finding the regression of the data for cost of floods.  This is because of huge spikes in cost, from millions to billions of dollars per year, occur during large storms.  This strongly skews regression lines.  To fix this, we took the median cost for every five years and performed regression on that to avoid outliers.
+## Accomplishments that I'm proud of
+I'm proud that we collected a series of data sets from different sources, combined them with some math, and made a useful product out of it.
+## What I learned
+I learned a lot about data analysis, parsing databases, and working with node.js throughout the journey to make this product.
+## What's next for Flood Cost Calculator
+The next steps for the Flood Cost Calculator would include calculating elevation of houses and accurately calculate the benefits of elevating a person's house to prevent food damage.

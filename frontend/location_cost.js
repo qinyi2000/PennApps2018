@@ -81,22 +81,23 @@ var costs = function(location, houseValue) {
 		}
 	});
 	//console.log(costArr);
-	var cost2D = costArr.map( (x, ind) => {
+	var cost2D = Array();
+	costArr.forEach( (x, ind) => {
 		xArr = x.split(",");
-		return [Number.parseInt(xArr[1]),Number.parseInt(xArr[3])];
+		cost2D.push([Number.parseInt(xArr[1]),Number.parseInt(xArr[3])]);
 	});
 	console.log(cost2D);
 	truncCost2D = Array();
 	// make medians
-	for(var i = cost2D.length-1; i >= 0; i-=5) {
+	for(var i = cost2D.length-1; i >= 2; i-=3) {
 		let a = Array();
-		for(var j = 0; j < 5; j++) {
-			a.push(cost2D[i-j]);
+		for(var j = 0; j < 3; j++) {
+			a.push(cost2D[i-j][1]);
 		}
 		a.sort();
-		truncCost2D += [cost2D[i], a[2]];
+		truncCost2D.push([cost2D[i][0], a[2]]);
 	}
-
+	console.log(truncCost2D);
 	var reg = [
 		regression.linear(truncCost2D, {precision: 4}),
 //		regression.exponential(cost2D, {precision: 4})
@@ -141,19 +142,21 @@ var costs = function(location, houseValue) {
 	var actualPop = parseInt(pops[0].split(",")[1]);
 	var perCapita = cost * 1.0 / actualPop;
 	//cost edit on house size
-	if(houseValue === 0) {
-		var adjCost = perCapita * 0.40; 
-	}else if(houseValue === 1) {
-		var adjCost = perCapita;
+	var adjCost = 0;
+	console.log("houseValue = " + houseValue);
+	if(houseValue == 0) {
+		adjCost = perCapita * 0.40; 
+	}else if(houseValue == 1) {
+		adjCost = perCapita;
 	}else {
-		var adjCost = perCapita * 2.00;
+		adjCost = perCapita * 2.00;
 	}
 	return {cost:adjCost};
 };
 
-var saved = function(location, c, houseValue) {
+var saved = function(location, c) {
 	var state = location.state;
-	var cost = c.cost;
+	var price = c.cost;
 	var prems = String(premiums).split("\n").filter( (x) => {
 		try{
 			parseInt(x.split(",")[0])
@@ -165,12 +168,17 @@ var saved = function(location, c, houseValue) {
 	});
 	premiumPrice = parseInt(prems[0].split(",")[2].substring(1)); //remove $ sign
 	pTotal = premiumPrice * 30;
-	return {
-		premium: pTotal,
+	var premium = Math.round(pTotal,2);
+	var cost = Math.round(price,2);
+	var newCost = Math.round(pTotal + 0.10*price,2);
+	prices = {
+		premium: premium,
 		cost: cost,
-		newCost: pTotal + 0.10*cost,
-		netSaved: cost-pTotal
-	}
+		newCost: newCost,
+		netSaved: cost-newCost
+	};
+	console.log(prices);
+	return prices;
 }
 
 var episodes = function(location) {
@@ -199,9 +207,9 @@ var episodes = function(location) {
 	}
 	var forecast = newDisasters * 30./11 + 1/2 * trend * 30./11;
 	var countyStats = {
-		incidents: incidents,
+		incidents: Math.round(incidents),
 		trend: trend,
-		forecast: forecast
+		forecast: Math.round(forecast)
 	};
 	return countyStats;
 };
@@ -229,9 +237,9 @@ module.exports = {
 		if(location=="Location Not Found"){
 			return -1
 		}
-		var episode = episodes(location)
-		var cost = costs(location)
-		var prices = saved(location, cost, houseValue)
-		return Object.assign(episode, prices, location) 
+		var episode = episodes(location);
+		var cost = costs(location, houseValue);
+		var prices = saved(location, cost);
+		return Object.assign(episode, prices, location); 
 	}
 };

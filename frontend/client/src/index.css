@@ -4,7 +4,21 @@ body {
   font-family: sans-serif;
 }
 .card {
-vertical-align: top;
-position:absolute;
-top:5
+	vertical-align: top;
+	position:absolute;
+	top: 10px;
+	z-index: 3;
+}
+
+#footer {
+	position: absolute;
+	text-align: center;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+img {
+	width: 75%;
+	height: auto;
 }

@@ -54,21 +54,21 @@ class App extends React.Component{
                 </Navbar>
 
 	      <form ref={el => (this.form = el)}>
-         	Enter your zip code:
+         	Enter your zip code:  
           <TextFeld placeholder="" name="zipcode" onChange={(event)=>this.setState({zip:event.target.value})} type="number"></TextFeld><br/>
-         	Enter the size range of your home in square feet:{this.renderSelect()}<br/><br/>
+         	Enter the size range of your home in square feet:  {this.renderSelect()}<br/><br/>
 	        <Button variant="raised" onClick={this.onChange} color="primary" disabled={this.state.zip.length!=5 || this.state.homesize==-1}>Calculate Your Cost</Button>
 	      {this.state.value.includes("Fill in")?(<p></p>):(<div>
 		 <Card style={{width:"30vw"}} className="card">
-		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardMedia><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/FEMA_logo.svg/1580px-FEMA_logo.svg.png"></img></CardMedia>
 		      <CardContent>{this.state.value}</CardContent>
 		 </Card>   
 		 <Card style={{width:"30vw", float:"left", top:"-30vh"}} className="card">
-		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardMedia><img src="https://cedwardpitt.files.wordpress.com/2017/08/flooding.jpg"></img></CardMedia>
 		      <CardContent>{this.state.value2}</CardContent>
 		 </Card>     
 		 <Card style={{width:"30vw", float:"right", top:"-30vh"}} className="card">
-		      <CardMedia><img src="/images/sample-1.jpg"></img></CardMedia>
+		      <CardMedia><img src="https://cdn.vox-cdn.com/uploads/chorus_asset/file/9135679/840248942.jpg"></img></CardMedia>
 		      <CardContent>{this.state.value3}</CardContent>
 		 </Card>     
   </div>)}
