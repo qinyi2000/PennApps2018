@@ -62,11 +62,10 @@ state_abbr = {
 	'WI' : 'Wisconsin',
 	'WY' : 'Wyoming'
 }
-module.exports = {
-	costs : function(episodes, location) {
-			
-	},
-	episodes : function(location) {
+var costs = function(location){
+	return {costs:-1}
+}
+	var episodes = function(location) {
 		var state = location.state;
 		var county = location.county;
 		if(county==""){
@@ -97,8 +96,8 @@ module.exports = {
 			forecast: forecast
 		};
 		return countyStats;
-	},
-	locator : function(zipCode) {
+	}
+	var locator = function(zipCode) {
 		var zipLine=String(zipData).split("\r\n").filter((x)=>new RegExp(zipCode+".*").test(x))[0]
 		if(!zipLine) {
 			throw "Location Not Found";
@@ -107,11 +106,18 @@ module.exports = {
 		var zipArr = zipLine.split(",");
 
 		var location = {
-			zip: zipCode,
+			zipcode: zipCode,
 			city: zipArr[3],
 			state: state_abbr[zipArr[4]],
 			county: zipArr[8]
 		};
 		return location;
+	}
+module.exports = {
+	main : function(zipCode){
+		var location = locator(zipCode)
+		var episode = episodes(location)
+		var cost = costs(location)
+		return Object.assign(episode, cost, location) 
 	}
 };
