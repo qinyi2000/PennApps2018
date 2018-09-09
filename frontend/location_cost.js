@@ -69,7 +69,7 @@ state_abbr = {
 	'WY' : 'Wyoming'
 }
 
-var costs = function(location) {
+var costs = function(location, houseValue) {
 	var state = location.state;
 	var trend = episodes.trend;
 	var costArr = String(stateData).split("\n").filter( (x) => {
@@ -112,12 +112,20 @@ var costs = function(location) {
 			return false;
 		}
 	});
-	actualPop = parseInt(pops[0].split(",")[1]);
-	perCapita = cost * 1.0 / actualPop;
-	return {cost:perCapita};
+	var actualPop = parseInt(pops[0].split(",")[1]);
+	var perCapita = cost * 1.0 / actualPop;
+	//cost edit on house size
+	if(houseValue == 0) {
+		var adjCost = perCapita * 0.40; 
+	}else if(houseValue == 1) {
+		var adjCost = perCapita;
+	}else {
+		var adjCost = perCapita * 2.00;
+	}
+	return {cost:adjCost};
 };
 
-var saved = function(location, c) {
+var saved = function(location, c, houseValue) {
 	var state = location.state;
 	var cost = c.cost;
 	var prems = String(premiums).split("\n").filter( (x) => {
@@ -134,6 +142,7 @@ var saved = function(location, c) {
 	return {
 		premium: pTotal,
 		cost: cost,
+		newCost: pTotal + 0.10*cost,
 		netSaved: cost-pTotal;
 	}
 }
@@ -193,6 +202,7 @@ module.exports = {
 		var location = locator(zipCode)
 		var episode = episodes(location)
 		var cost = costs(location)
-		return Object.assign(episode, cost, location) 
+		var prices = saved(location, cost, houseValue)
+		return Object.assign(episode, prices, location) 
 	}
 };
